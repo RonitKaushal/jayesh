@@ -1,5 +1,5 @@
 "use client";
-import React, { useState, useEffect } from "react";
+import React from "react";
 import { FlowingMenu } from "@/components/ui/flowing-menu";
 import BlurText from "./blurText";
 
@@ -32,15 +32,7 @@ const demoItems = [
 ];
 
 const FlowingMenuDemo = () => {
-  const [isDarkMode, setIsDarkMode] = useState(false);
 
-  useEffect(() => {
-    if (isDarkMode) {
-      document.documentElement.classList.add("dark");
-    } else {
-      document.documentElement.classList.remove("dark");
-    }
-  }, [isDarkMode]);
 
   return (
     <section id="skills" className="w-full flex flex-col items-center justify-center relative">

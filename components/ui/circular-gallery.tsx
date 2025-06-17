@@ -12,9 +12,9 @@ import {
 
 type GL = Renderer["gl"];
 
-function debounce<T extends (...args: any[]) => void>(func: T, wait: number) {
+function debounce<T extends (...args: unknown[]) => void>(func: T, wait: number) {
   let timeout: number;
-  return function (this: any, ...args: Parameters<T>) {
+  return function (this: unknown, ...args: Parameters<T>) {
     window.clearTimeout(timeout);
     timeout = window.setTimeout(() => func.apply(this, args), wait);
   };
@@ -24,11 +24,15 @@ function lerp(p1: number, p2: number, t: number): number {
   return p1 + (p2 - p1) * t;
 }
 
-function autoBind(instance: any): void {
+function autoBind(instance: object): void {
   const proto = Object.getPrototypeOf(instance);
-  Object.getOwnPropertyNames(proto).forEach((key) => {
-    if (key !== "constructor" && typeof instance[key] === "function") {
-      instance[key] = instance[key].bind(instance);
+  const descriptors = Object.getOwnPropertyDescriptors(proto);
+  
+  Object.entries(descriptors).forEach(([key, descriptor]) => {
+    if (key !== 'constructor' && typeof descriptor.value === 'function') {
+      const originalMethod = descriptor.value;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+      (instance as any)[key] = originalMethod.bind(instance);
     }
   });
 }
@@ -426,7 +430,7 @@ class App {
     last: number;
     position?: number;
   };
-  onCheckDebounce: (...args: any[]) => void;
+  onCheckDebounce: (...args: unknown[]) => void;
   renderer!: Renderer;
   gl!: GL;
   camera!: Camera;
